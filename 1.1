@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>埼玉県全市区町村戦乱 - SAITAMA REGION WAR -</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Noto+Sans+JP:wght@400;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ── */
+:root {
+  --bg: #0b0f19; --s1: #111827; --s2: #1f2937; --s3: #374151;
+  --bd: #4b5563; --bd2: #374151; --bd3: #6b7280;
+  --cy: #38bdf8; --gr: #34d399; --rd: #f87171; --am: #fbbf24;
+  --pu: #c084fc; --bl: #60a5fa; --te: #2dd4bf;
+  --dim: #9ca3af; --tx: #e5e7eb; --wt: #f9fafb; --wt2: #ffffff;
+  --mf: 'Share Tech Mono', monospace;
+  --jp: 'Noto Sans JP', sans-serif;
+  --hf: 'Rajdhani', sans-serif;
+  --pl-col: #38bdf8; --en-col: #f87171;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; background: var(--bg); color: var(--tx); font-family: var(--jp); font-size: 13px; overflow: hidden; }
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--bd3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--dim); }
+
+/* ── HEADER ── */
+#hdr { height: 50px; display: flex; align-items: center; gap: 12px; padding: 0 18px; background: #0f172a; border-bottom: 2px solid var(--bd2); flex-shrink: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.5); position: relative; z-index: 10;}
+#hdr h1 { font-family: var(--hf); font-size: 18px; color: var(--wt2); letter-spacing: 2px; white-space: nowrap; text-shadow: 0 0 8px rgba(255,255,255,0.4); }
+.hdiv { width: 1px; height: 26px; background: var(--bd2); margin: 0 4px; }
+.hs { font-family: var(--mf); font-size: 11px; color: var(--dim); display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+.hs b { color: var(--wt); font-weight: bold; font-size: 12px; }
+.hs.hl b { color: var(--cy); text-shadow: 0 0 5px var(--cy); }
+.ptag { padding: 4px 12px; border-radius: 12px; font-family: var(--jp); font-size: 10px; font-weight: bold; border: 1px solid var(--cy); color: var(--cy); background: rgba(56,189,248,0.1); white-space: nowrap; letter-spacing: 1px; }
+.ptag.e { border-color: var(--rd); color: var(--rd); background: rgba(248,113,113,0.1); }
+.spd-grp { display: flex; gap: 4px; }
+.sbtn { padding: 3px 10px; border: 1px solid var(--bd3); border-radius: 3px; cursor: pointer; font-family: var(--jp); font-size: 10px; color: var(--dim); background: var(--s1); transition: all .15s; }
+.sbtn.on { border-color: var(--am); color: var(--am); background: rgba(251,191,36,0.15); box-shadow: 0 0 5px rgba(251,191,36,0.3); }
+#runlb { font-family: var(--jp); font-size: 11px; color: var(--am); display: none; animation: blink 1s infinite; font-weight: bold; }
+#runlb.on { display: inline; }
+@keyframes blink { 0%, 100% { opacity: 1 } 50% { opacity: .3 } }
+#hdr .fill { flex: 1; }
+
+/* ── LAYOUT ── */
+#app { display: grid; grid-template-columns: 280px 1fr 320px; height: calc(100vh - 50px); }
+.col { display: flex; flex-direction: column; overflow: hidden; background: var(--bg); }
+.col-b { border-right: 1px solid var(--bd2); }
+
+/* ── SECTION HEADERS ── */
+.sh { padding: 8px 14px; background: linear-gradient(90deg, #1e293b 0%, #0f172a 100%); border-bottom: 1px solid var(--bd2); font-family: var(--hf); font-size: 12px; font-weight: bold; letter-spacing: 2px; color: var(--wt); text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+.sh-sub { font-size: 10px; letter-spacing: 0; color: var(--dim); font-family: var(--jp); }
+.scrl { overflow-y: auto; flex: 1; padding: 4px; }
+
+/* ── UNIT CARDS ── */
+.uc { margin: 6px; padding: 10px 12px; border-radius: 6px; border: 1px solid var(--bd2); background: var(--s1); transition: all 0.2s; position: relative; overflow: hidden; }
+.uc:hover { border-color: var(--bd3); background: var(--s2); transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+.uc::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; }
+.uc.al::before { background: var(--pl-col); }
+.uc.en::before { background: var(--en-col); }
+.uc-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+.uc-nm { font-size: 14px; font-weight: bold; }
+.uc-nm.al { color: var(--pl-col); } .uc-nm.en { color: var(--tx); }
+.uc-sub { font-size: 10px; color: var(--dim); font-family: var(--jp); background: rgba(255,255,255,0.05); padding: 2px 6px; border-radius: 3px; }
+.brow { margin: 3px 0; }
+.blb { display: flex; justify-content: space-between; font-size: 10px; color: var(--tx); font-family: var(--mf); margin-bottom: 2px; }
+.btrk { height: 6px; background: #03080d; border-radius: 3px; overflow: hidden; border: 1px solid #112233; }
+.bfill { height: 100%; border-radius: 2px; transition: width .5s cubic-bezier(0.4, 0, 0.2, 1); }
+.b-hp { background: linear-gradient(90deg, var(--rd) 0%, var(--am) 50%, var(--gr) 100%); }
+.b-fl { background: linear-gradient(90deg, #10b981, #3b82f6); }
+.acs { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.ac { font-size: 10px; font-family: var(--jp); padding: 2px 6px; border-radius: 3px; background: rgba(56,189,248,0.15); border: 1px solid rgba(56,189,248,0.3); color: var(--wt); }
+.ac.en { color: var(--wt); background: rgba(248,113,113,0.15); border-color: rgba(248,113,113,0.3); }
+
+/* ── MAP ── */
+#map { height: 260px; flex-shrink: 0; position: relative; overflow: hidden; background: #0f172a; border-bottom: 1px solid var(--bd2); box-shadow: inset 0 0 20px rgba(0,0,0,0.8); }
+#mbg { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
+#asvg { position: absolute; inset: 0; pointer-events: none; z-index: 5; }
+#nds { position: absolute; inset: 0; z-index: 4; }
+@keyframes dash { to { stroke-dashoffset: -14; } }
+.aln { stroke-dasharray: 6 4; animation: dash .25s linear infinite; }
+.mn { position: absolute; transform: translate(-50%, -50%); text-align: center; cursor: pointer; z-index: 4; user-select: none; transition: transform 0.2s; }
+.mn:hover { transform: translate(-50%, -50%) scale(1.15); z-index: 10; }
+.mn-c { width: 24px; height: 24px; border-radius: 50%; border: 2px solid; margin: 0 auto 3px; display: flex; align-items: center; justify-content: center; font-size: 10px; transition: all .3s; background: var(--bg); box-shadow: 0 2px 6px rgba(0,0,0,0.6); }
+.mn.al .mn-c { border-color: var(--pl-col); color: var(--pl-col); box-shadow: 0 0 10px rgba(56,189,248,0.5); background: rgba(56,189,248,0.1); }
+.mn.en .mn-c { border-color: var(--en-col); color: var(--en-col); }
+.mn.sel .mn-c { box-shadow: 0 0 0 3px var(--am), 0 0 12px rgba(251,191,36,.6); border-color: var(--wt); }
+@keyframes flash { 0%,100%{transform:translate(-50%,-50%) scale(1)} 35%{transform:translate(-50%,-50%) scale(1.8)} }
+.mn.fl .mn-c { animation: flash .2s ease 3; }
+.mn-lb { font-size: 11px; font-weight: bold; white-space: nowrap; pointer-events: none; text-shadow: 0 1px 3px #000; margin-bottom: 1px; }
+.mn.al .mn-lb { color: var(--pl-col); } .mn.en .mn-lb { color: var(--tx); }
+.mn-hp { font-size: 10px; font-family: var(--mf); pointer-events: none; background: rgba(0,0,0,0.6); padding: 1px 4px; border-radius: 3px; display: inline-block; }
+.mn-tip { position: absolute; top: -5px; left: 30px; background: rgba(15,23,42,0.95); border: 1px solid var(--bd3); padding: 8px 12px; font-size: 12px; font-family: var(--jp); white-space: pre; z-index: 20; color: var(--wt); border-radius: 4px; pointer-events: none; display: none; line-height: 1.6; min-width: 180px; box-shadow: 0 8px 24px rgba(0,0,0,.8); text-align: left; }
+.mn:hover .mn-tip { display: block; }
+
+/* ── COMMAND AREA ── */
+#cmd { flex: 1; display: grid; grid-template-columns: 1fr 1fr; min-height: 0; background: var(--bg); }
+#cmdl { display: flex; flex-direction: column; overflow: hidden; border-right: 1px solid var(--bd2); }
+#cmdscrl { flex: 1; overflow-y: auto; padding: 12px 16px; }
+#cmdbtn { flex-shrink: 0; padding: 12px 16px; border-top: 1px solid var(--bd2); background: var(--s1); box-shadow: 0 -4px 10px rgba(0,0,0,0.2); }
+#cmdr { display: flex; flex-direction: column; overflow: hidden; }
+#rtabs { display: flex; border-bottom: 1px solid var(--bd2); flex-shrink: 0; background: var(--s1); }
+.rtab { flex: 1; padding: 10px 4px; text-align: center; cursor: pointer; font-family: var(--jp); font-size: 12px; font-weight: bold; color: var(--dim); border-bottom: 3px solid transparent; background: transparent; border-top: none; border-left: none; border-right: none; transition: all .2s; }
+.rtab:hover { color: var(--tx); background: rgba(255,255,255,0.02); }
+.rtab.on { color: var(--pl-col); border-bottom-color: var(--pl-col); background: rgba(56,189,248,0.05); }
+.rtab-pnl { display: none; flex: 1; flex-direction: column; overflow: hidden; }
+.rtab-pnl.on { display: flex; }
+.rtab-scrl { flex: 1; overflow-y: auto; padding: 8px; }
+#execrow { flex-shrink: 0; padding: 12px 16px; border-top: 1px solid var(--bd2); background: var(--s1); box-shadow: 0 -4px 10px rgba(0,0,0,0.2); }
+
+/* ── CUSTOM UI CONTROLS ── */
+.fr { margin-bottom: 14px; }
+.fr > label { font-size: 12px; color: var(--wt); font-family: var(--jp); display: block; margin-bottom: 6px; font-weight: bold; border-left: 3px solid var(--pl-col); padding-left: 6px; }
+.btn-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.tgl-btn { flex: 1 1 calc(50% - 8px); min-width: fit-content; background: var(--s2); border: 1px solid var(--bd3); color: var(--tx); padding: 10px 14px; border-radius: 4px; cursor: pointer; font-family: var(--jp); font-size: 12px; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); text-align: center; line-height: 1.4; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.tgl-btn:hover { background: var(--s3); border-color: var(--pl-col); color: var(--wt); }
+.tgl-btn.active { background: rgba(56,189,248,0.15); border-color: var(--pl-col); color: var(--wt2); font-weight: bold; box-shadow: inset 0 0 10px rgba(56,189,248,0.2); }
+.tgt-btn.active { border-color: var(--rd); background: rgba(248,113,113,0.15); box-shadow: inset 0 0 10px rgba(248,113,113,0.2); color: var(--wt2); }
+
+input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+input[type=range]:focus { outline: none; }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 18px; width: 18px; border-radius: 50%; background: var(--pl-col); cursor: pointer; margin-top: -7px; box-shadow: 0 0 10px var(--pl-col); transition: transform 0.1s; }
+input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: var(--bd3); border-radius: 2px; }
+
+.mdesc { font-size: 11px; color: var(--tx); font-family: var(--jp); padding: 8px 10px; margin-bottom: 12px; line-height: 1.5; border-left: 3px solid var(--am); background: rgba(251,191,36,0.06); border-radius: 0 4px 4px 0; }
+.hint { font-size: 11px; color: var(--gr); font-family: var(--jp); padding: 8px 10px; background: rgba(52,211,153,0.06); border-left: 3px solid var(--gr); margin-bottom: 8px; line-height: 1.5; border-radius: 0 4px 4px 0; font-weight: bold; }
+
+.badd { cursor: pointer; border-radius: 4px; font-family: var(--jp); background: rgba(56,189,248,0.1); border: 1px solid var(--pl-col); color: var(--pl-col); padding: 10px; font-size: 14px; font-weight: bold; width: 100%; transition: all 0.2s; }
+.badd:hover:not(:disabled) { background: rgba(56,189,248,0.2); box-shadow: 0 0 15px rgba(56,189,248,0.4); }
+.badd:disabled { opacity: 0.3; cursor: not-allowed; border-color: var(--dim); color: var(--dim); box-shadow: none; }
+
+.bexec { cursor: pointer; border-radius: 4px; font-family: var(--jp); background: linear-gradient(90deg, #2563eb, #3b82f6); border: 1px solid var(--bl); color: var(--wt2); padding: 12px; font-size: 16px; letter-spacing: 2px; font-weight: bold; width: 100%; transition: all 0.3s; box-shadow: 0 0 15px rgba(59,130,246,0.4); }
+.bexec:hover:not(:disabled) { filter: brightness(1.2); box-shadow: 0 0 25px rgba(59,130,246,0.6); transform: translateY(-2px); }
+.bexec:disabled { background: var(--s2); border-color: var(--bd3); color: var(--dim); box-shadow: none; cursor: not-allowed; }
+
+.qi { padding: 8px 10px; margin: 4px 0; font-size: 12px; font-family: var(--jp); color: var(--wt); background: rgba(56,189,248,0.06); border-left: 3px solid var(--pl-col); display: flex; align-items: center; gap: 8px; border-radius: 0 4px 4px 0; transition: all 0.2s; }
+.qi:hover { background: rgba(56,189,248,0.15); transform: translateX(2px); }
+.qi-txt { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.qi-del { cursor: pointer; color: var(--rd); font-size: 14px; font-weight: bold; padding: 0 4px; border-radius: 50%; background: rgba(248,113,113,0.1); display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; transition: all 0.2s; }
+.qi-del:hover { background: var(--rd); color: #fff; box-shadow: 0 0 8px var(--rd); }
+.qe { font-size: 12px; color: var(--dim); padding: 16px; font-family: var(--jp); text-align: center; line-height: 1.8; background: var(--s2); border-radius: 4px; border: 1px dashed var(--bd3); }
+
+/* LOG */
+#log { flex: 1; overflow-y: auto; padding: 8px; }
+.le { padding: 6px 12px; margin: 4px 0; font-size: 12px; line-height: 1.6; border-left: 3px solid; border-radius: 0 4px 4px 0; background: var(--s2); border-bottom: 1px solid rgba(255,255,255,0.02); }
+.le.cmd { border-color: var(--pl-col); background: rgba(56,189,248,0.05); }
+.le.hit { border-color: var(--am); background: rgba(251,191,36,0.05); }
+.le.ea { border-color: var(--rd); background: rgba(248,113,113,0.05); }
+.le.sys { border-color: var(--dim); color: var(--tx); font-size: 11px; }
+.le.win { border-color: var(--gr); background: rgba(52,211,153,0.1); color: var(--gr); font-weight: bold; }
+.le.lose { border-color: var(--rd); background: rgba(248,113,113,0.1); color: var(--rd); font-weight: bold; }
+.le.trn { border-color: var(--bd2); background: linear-gradient(90deg, #1e293b, transparent); color: var(--wt); font-family: var(--jp); font-size: 12px; font-weight: bold; padding: 8px 12px; margin: 8px 0; }
+
+/* OVERLAY (START/END) */
+#ov { display: flex; position: fixed; inset: 0; background: rgba(11,15,25,0.98); z-index: 300; align-items: center; justify-content: center; flex-direction: column; gap: 20px; backdrop-filter: blur(8px); }
+#ov.hide { display: none !important; }
+#ov h2 { font-family: var(--hf); font-size: 40px; letter-spacing: 6px; text-align: center; color: var(--wt); text-shadow: 0 0 20px var(--pl-col); margin-bottom: 10px; }
+#ov p { color: var(--tx); font-size: 15px; text-align: center; max-width: 600px; line-height: 1.8; white-space: pre-line; background: rgba(255,255,255,0.05); padding: 24px; border-radius: 8px; border: 1px solid var(--bd3); }
+.faction-sel { display: flex; gap: 16px; margin: 20px 0; flex-wrap: wrap; justify-content: center; }
+.f-card { background: var(--s2); border: 2px solid var(--bd3); padding: 20px; border-radius: 8px; cursor: pointer; transition: all 0.2s; width: 200px; text-align: center; }
+.f-card:hover { border-color: var(--pl-col); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+.f-card.sel { border-color: var(--pl-col); background: rgba(56,189,248,0.1); box-shadow: 0 0 15px rgba(56,189,248,0.4); }
+.f-card h3 { font-size: 18px; color: var(--wt); margin-bottom: 8px; }
+.f-card p { font-size: 12px; color: var(--dim); padding:0; background:none; border:none; line-height:1.4; text-align: left;}
+.ovbtn { padding: 14px 40px; border: 2px solid var(--pl-col); color: var(--wt); background: var(--pl-col); border-radius: 4px; cursor: pointer; font-family: var(--jp); font-size: 16px; font-weight: bold; letter-spacing: 2px; transition: all .3s; box-shadow: 0 0 15px rgba(56,189,248,0.4); margin-top: 10px; }
+.ovbtn:hover { filter: brightness(1.2); transform: scale(1.05); }
+.ovbtn:disabled { background: var(--bd3); border-color: var(--bd3); cursor: not-allowed; transform: none; filter: none; box-shadow: none; }
+</style>
+</head>
+<body>
+
+<div id="hdr">
+  <h1>埼玉県全市区町村戦乱</h1>
+  <div class="hdiv"></div>
+  <span class="hs">第 <b id="tnum">1</b> ターン</span>
+  <span id="ptag" class="ptag">命令フェーズ</span>
+  <div class="hdiv"></div>
+  <span class="hs">制圧数 <b id="sb2">0</b> 市区町村</span>
+  <div class="fill"></div>
+  <span id="runlb">● 進行中...</span>
+  <span class="hs" style="margin-right:4px">進行速度</span>
+  <div class="spd-grp">
+    <button class="sbtn" id="s0" onclick="setSpd(0)">遅</button>
+    <button class="sbtn on" id="s1" onclick="setSpd(1)">普</button>
+    <button class="sbtn" id="s2" onclick="setSpd(2)">速</button>
+    <button class="sbtn" id="s3" onclick="setSpd(3)">超速</button>
+  </div>
+</div>
+
+<div id="app">
+  <div class="col col-b">
+    <div class="sh">自陣営 <span class="sh-sub" id="aly-sm"></span></div>
+    <div class="scrl" id="acp" style="flex:0 0 auto;max-height:46%; padding-bottom:8px;"></div>
+    <div class="sh">他勢力 <span class="sh-sub" id="en-sm"></span></div>
+    <div class="scrl" id="enp"></div>
+  </div>
+
+  <div class="col col-b">
+    <div id="map">
+      <svg id="mbg" width="100%" height="100%">
+        <defs>
+          <pattern id="g1" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M40 0H0V40" fill="none" stroke="#1e293b" stroke-width="1"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#g1)"/>
+        <text x="10" y="22" fill="#475569" font-size="14" font-weight="bold" letter-spacing="2">SAITAMA REGION</text>
+      </svg>
+      <svg id="asvg" width="100%" height="100%"></svg>
+      <div id="nds"></div>
+    </div>
+
+    <div id="cmd">
+      <div id="cmdl">
+        <div class="sh" style="font-size:13px; letter-spacing:2px;">▶ TACTICAL COMMAND</div>
+        <div id="cmdscrl">
+          <div class="fr">
+            <label>発進拠点</label>
+            <div id="base-selector" class="btn-grid"></div>
+          </div>
+          <div class="fr">
+            <label>作戦種別</label>
+            <div id="miss-selector" class="btn-grid"></div>
+          </div>
+          <div class="mdesc" id="mdesc"></div>
+          <div id="acrow" class="fr">
+            <label>投入部隊</label>
+            <div id="ac-selector" class="btn-grid"></div>
+          </div>
+          <div id="cntr" class="fr">
+            <label>動員規模 <span id="avlb" style="color:var(--gr); margin-left:8px; font-weight:normal;"></span></label>
+            <div style="display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.02); padding:10px; border-radius:4px; border:1px solid var(--bd2);">
+               <input type="range" id="sn" min="1" max="1" value="1" oninput="updRange()">
+               <div id="sn-val" style="font-size:18px; font-weight:bold; color:var(--pl-col); min-width:32px; text-align:right;">1</div>
+            </div>
+          </div>
+          <div id="tgtrow" class="fr">
+            <label>目標</label>
+            <div id="tgt-selector" class="btn-grid"></div>
+          </div>
+          <div class="hint" id="hint"></div>
+        </div>
+        <div id="cmdbtn">
+          <button class="btn badd" id="badd" onclick="addQ()">
+            ＋ 命令をキューに追加
+          </button>
+        </div>
+      </div>
+
+      <div id="cmdr">
+        <div id="rtabs">
+          <button class="rtab on">命令キュー (最大5)</button>
+        </div>
+        <div class="rtab-pnl on" id="tab-queue">
+          <div class="rtab-scrl" id="qbox">
+            <div class="qe">命令なし</div>
+          </div>
+        </div>
+        <div id="execrow">
+          <button class="btn bexec" id="bexec" onclick="exeTurn()">
+            ◀▶ ターン実行（第<span id="tnexec">1</span>ターン）
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="sh">BATTLE LOG</div>
+    <div id="log"></div>
+  </div>
+</div>
+
+<div id="ov">
+  <h2 id="ovh">埼玉県全市区町村戦乱</h2>
+  <p id="ovp">埼玉県が崩壊し、各市区町村が独立勢力となった。<br>自らの自治体を指揮し、他勢力を併合して埼玉統一を目指せ。</p>
+  
+  <div id="start-ui" style="display:flex; flex-direction:column; align-items:center;">
+    <div style="color:var(--wt); font-size:16px; margin-bottom:10px; font-weight:bold;">担当する自治体を選択してください</div>
+    <div class="faction-sel">
+      <div class="f-card" onclick="selFac('omiya')">
+        <h3>大宮区</h3>
+        <p>圧倒的な経済力と交通網を誇る。資金供給が高く、陸戦部隊の運用に長けるバランス型。</p>
+      </div>
+      <div class="f-card" onclick="selFac('kawagoe')">
+        <h3>川越市</h3>
+        <p>小江戸の歴史と独自路線を貫く。航空部隊の配備数が多く、機動力を活かした電撃戦が得意。</p>
+      </div>
+      <div class="f-card" onclick="selFac('shiki')">
+        <h3>志木市</h3>
+        <p>コンパクトながら強固な結束を持つ。初期防衛力が高く、歩兵部隊による粘り強い戦いを見せる。</p>
+      </div>
+    </div>
+    <button class="ovbtn" id="start-btn" onclick="initGame()" disabled>出陣する</button>
+  </div>
+  
+  <div id="end-ui" style="display:none; flex-direction:column; align-items:center;">
+    <button class="ovbtn" onclick="location.reload()">再戦する</button>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════
+//  SYSTEM & DATA
+// ════════════════════════════════════════════════
+const DELAYS=[700,400,150,20];
+let SPD=1;
+function setSpd(i){
+  SPD=i; document.querySelectorAll('.sbtn').forEach((b,j)=>b.classList.toggle('on',j===i));
+}
+const delay=ms=>new Promise(r=>setTimeout(r,DELAYS[SPD]*ms/400));
+
+// 部隊定義
+const UNITS={
+  inf:{n:'保安隊', atk:12, cost:15, def:1.2, role:'防衛・制圧', desc:'安価で数を出せる基本的な陸上部隊。'},
+  tank:{n:'主力戦車', atk:28, cost:40, def:2.0, role:'高火力陸戦', desc:'拠点制圧能力に優れる陸の王者。'},
+  heli:{n:'攻撃ヘリ', atk:22, cost:30, def:0.8, role:'航空支援', desc:'機動力に優れ、敵の防衛をすり抜けやすい。'},
+  jet:{n:'戦闘機', atk:35, cost:55, def:1.0, role:'航空優勢', desc:'最高の攻撃力を持つが、コストが高い。'},
+};
+
+// 作戦定義
+const MISS=[
+  {id:'assault', n:'陸上侵攻', u:['inf','tank'], desc:'陸戦部隊を展開し、敵拠点の耐久値を削る。耐久0で併合。'},
+  {id:'airstrike', n:'航空爆撃', u:['heli','jet'], desc:'航空部隊による爆撃。防衛陣地を無視しやすい。'},
+  {id:'defend', n:'防衛陣地構築', u:['inf','tank'], tg:'self', desc:'自拠点の防衛力を一時的に高め、被害を軽減する。'},
+  {id:'recruit', n:'部隊徴募', u:['inf','tank','heli','jet'], tg:'none', desc:'資金を消費し、選択した部隊を自拠点に追加配備する。'}
+];
+
+// 初期ノードデータ（全24拠点）
+const BASE_NODES = [
+  {id:'omiya', n:'大宮区', px:'55%', py:'35%', hp:1200, res:500, inc:120, def:3, u:{inf:20, tank:10, heli:5, jet:2}},
+  {id:'urawa', n:'浦和区', px:'55%', py:'45%', hp:1100, res:450, inc:100, def:4, u:{inf:15, tank:8, heli:4, jet:1}},
+  {id:'chuo', n:'中央区', px:'50%', py:'40%', hp:800, res:300, inc:70, def:3, u:{inf:15, tank:5, heli:2, jet:0}},
+  {id:'kawaguchi', n:'川口市', px:'60%', py:'55%', hp:1300, res:600, inc:130, def:2, u:{inf:25, tank:12, heli:3, jet:1}},
+  {id:'warabi', n:'蕨市', px:'55%', py:'50%', hp:600, res:250, inc:60, def:2, u:{inf:15, tank:2, heli:0, jet:0}},
+  {id:'toda', n:'戸田市', px:'52%', py:'53%', hp:750, res:350, inc:80, def:2, u:{inf:18, tank:4, heli:2, jet:0}},
+  {id:'kawagoe', n:'川越市', px:'35%', py:'40%', hp:1150, res:400, inc:90, def:3, u:{inf:15, tank:8, heli:12, jet:3}},
+  {id:'shiki', n:'志木市', px:'45%', py:'50%', hp:700, res:280, inc:60, def:5, u:{inf:25, tank:3, heli:1, jet:0}},
+  {id:'asaka', n:'朝霞市', px:'48%', py:'55%', hp:850, res:380, inc:85, def:3, u:{inf:20, tank:6, heli:2, jet:0}},
+  {id:'wako', n:'和光市', px:'50%', py:'58%', hp:800, res:350, inc:80, def:3, u:{inf:18, tank:5, heli:2, jet:0}},
+  {id:'niiza', n:'新座市', px:'42%', py:'55%', hp:900, res:400, inc:85, def:3, u:{inf:22, tank:6, heli:3, jet:0}},
+  {id:'tokorozawa', n:'所沢市', px:'30%', py:'50%', hp:1250, res:500, inc:110, def:4, u:{inf:20, tank:10, heli:6, jet:2}},
+  {id:'sayama', n:'狭山市', px:'25%', py:'45%', hp:950, res:420, inc:90, def:3, u:{inf:18, tank:8, heli:5, jet:1}},
+  {id:'hanno', n:'飯能市', px:'15%', py:'48%', hp:750, res:300, inc:60, def:4, u:{inf:15, tank:4, heli:1, jet:0}},
+  {id:'chichibu', n:'秩父市', px:'10%', py:'30%', hp:850, res:250, inc:50, def:6, u:{inf:20, tank:2, heli:0, jet:0}},
+  {id:'kumagaya', n:'熊谷市', px:'35%', py:'15%', hp:1100, res:450, inc:95, def:3, u:{inf:20, tank:8, heli:4, jet:1}},
+  {id:'fukaya', n:'深谷市', px:'25%', py:'10%', hp:900, res:380, inc:80, def:3, u:{inf:18, tank:6, heli:3, jet:0}},
+  {id:'honjo', n:'本庄市', px:'15%', py:'5%', hp:800, res:320, inc:70, def:3, u:{inf:15, tank:5, heli:2, jet:0}},
+  {id:'koshigaya', n:'越谷市', px:'75%', py:'40%', hp:1200, res:500, inc:110, def:3, u:{inf:22, tank:9, heli:4, jet:1}},
+  {id:'soka', n:'草加市', px:'70%', py:'50%', hp:1050, res:450, inc:100, def:3, u:{inf:20, tank:7, heli:3, jet:0}},
+  {id:'kasukabe', n:'春日部市', px:'75%', py:'25%', hp:1100, res:460, inc:95, def:3, u:{inf:18, tank:8, heli:4, jet:1}},
+  {id:'misato', n:'三郷市', px:'85%', py:'45%', hp:850, res:380, inc:80, def:2, u:{inf:16, tank:5, heli:2, jet:0}},
+  {id:'kuki', n:'久喜市', px:'65%', py:'15%', hp:950, res:400, inc:85, def:3, u:{inf:18, tank:6, heli:3, jet:0}},
+  {id:'gyoda', n:'行田市', px:'45%', py:'15%', hp:800, res:320, inc:70, def:4, u:{inf:15, tank:4, heli:1, jet:0}}
+];
+
+let G={};
+let selPId='';
+
+function selFac(id){
+  selPId=id;
+  document.querySelectorAll('.f-card').forEach(c=>c.classList.remove('sel'));
+  event.currentTarget.classList.add('sel');
+  document.getElementById('start-btn').disabled=false;
+}
+
+function initGame(){
+  document.getElementById('ov').classList.add('hide');
+  document.getElementById('log').innerHTML='';
+  G = {
+    turn:1, phase:'cmd', q:[], running:false,
+    nodes:{}, player:selPId, stat:{kills:0}
+  };
+  
+  BASE_NODES.forEach(n => {
+    G.nodes[n.id] = { ...n, mhp:n.hp, owner: n.id===selPId ? 'pl' : n.id, defBuff:0 };
+  });
+
+  UI = { base:selPId, miss:'assault', ac:'inf', tgt:'' };
+  
+  lg('trn','━━━━━━━━━━ 埼玉県全市区町村戦乱 ━━━━━━━━━━');
+  lg('sys',`プレイヤーは「${G.nodes[selPId].n}」の指揮権を掌握。周辺自治体への侵攻を開始せよ。`);
+  
+  rebuildSel(); renderAll();
+}
+
+// ════════════════════════════════════════════════
+//  UI LOGIC
+// ════════════════════════════════════════════════
+let UI={};
+
+function rebuildSel() {
+  const bases = Object.values(G.nodes).filter(n => n.owner === 'pl');
+  if(!bases.length) return;
+  if (!bases.some(b => b.id === UI.base)) UI.base = bases[0].id;
+  
+  document.getElementById('base-selector').innerHTML = bases.map(b =>
+    `<button class="tgl-btn ${UI.base === b.id ? 'active' : ''}" onclick="selectBase('${b.id}')">
+       <span style="font-size:14px;font-weight:bold">${b.n}</span>
+       <span style="font-size:10px;color:var(--gr);margin-top:2px;">(資金:${b.res})</span>
+     </button>`
+  ).join('');
+  buildMiss();
+}
+function selectBase(id) { UI.base = id; buildMiss(); }
+
+function buildMiss() {
+  document.getElementById('miss-selector').innerHTML = MISS.map(m =>
+    `<button class="tgl-btn ${UI.miss === m.id ? 'active' : ''}" onclick="selectMiss('${m.id}')" style="padding:6px 10px">${m.n}</button>`
+  ).join('');
+  onMiss();
+}
+function selectMiss(id) { UI.miss = id; onMiss(); }
+
+function onMiss() {
+  const md = MISS.find(m => m.id === UI.miss);
+  document.getElementById('mdesc').textContent = md.desc;
+  
+  const b = G.nodes[UI.base];
+  let keys = md.u.filter(k => md.id==='recruit' || b.u[k] > 0);
+  if(!keys.includes(UI.ac)) UI.ac = keys[0] || '';
+  
+  document.getElementById('acrow').style.display = keys.length ? '' : 'none';
+  document.getElementById('ac-selector').innerHTML = keys.map(k =>
+    `<button class="tgl-btn ${UI.ac === k ? 'active' : ''}" onclick="selectAc('${k}')">
+       <span style="font-size:12px">${UNITS[k].n}</span>
+       <span style="color:${md.id==='recruit'?'var(--am)':'var(--gr)'};font-size:10px;margin-top:2px;">
+         ${md.id==='recruit'?'ｺｽﾄ:'+UNITS[k].cost:'配備:'+b.u[k]}
+       </span>
+     </button>`
+  ).join('');
+  
+  document.getElementById('tgtrow').style.display = (md.tg==='self'||md.tg==='none') ? 'none' : '';
+  onAc();
+}
+function selectAc(k) { UI.ac = k; onAc(); }
+
+function updRange() {
+  const v = document.getElementById('sn').value;
+  document.getElementById('sn-val').textContent = v;
+  updHint();
+}
+
+function onAc() {
+  const b = G.nodes[UI.base], md = MISS.find(m => m.id === UI.miss);
+  const inp = document.getElementById('sn');
+  if(!UI.ac) { document.getElementById('avlb').textContent=''; document.getElementById('cntr').style.display='none'; updTgt(); return; }
+  
+  document.getElementById('cntr').style.display='';
+  if(md.id==='recruit'){
+    const max = Math.floor(b.res / UNITS[UI.ac].cost);
+    document.getElementById('avlb').textContent = `(最大 ${max}部隊)`;
+    inp.max = Math.max(1, max);
+  } else {
+    const av = b.u[UI.ac] || 0;
+    document.getElementById('avlb').textContent = `(配備: ${av}部隊)`;
+    inp.max = Math.max(1, av);
+  }
+  if (parseInt(inp.value) > parseInt(inp.max)) inp.value = inp.max;
+  updRange(); updTgt();
+}
+
+function updTgt() {
+  const md = MISS.find(m => m.id === UI.miss);
+  const st = document.getElementById('tgt-selector');
+  if(md.tg !== 'self' && md.tg !== 'none') {
+     let tgts = Object.values(G.nodes).filter(n => n.owner !== 'pl');
+     if(!tgts.some(t => t.id === UI.tgt)) UI.tgt = tgts[0]?.id || '';
+     st.innerHTML = tgts.map(t =>
+       `<button class="tgl-btn tgt-btn ${UI.tgt === t.id ? 'active' : ''}" onclick="selectTgt('${t.id}')">
+          <div style="font-size:12px; font-weight:bold;">${t.n}</div>
+          <div style="font-size:10px; color:var(--tx); margin-top:2px;">耐久:${t.hp}</div>
+        </button>`
+     ).join('');
+  } else {
+     UI.tgt = UI.base;
+  }
+  updHint();
+}
+function selectTgt(id) { UI.tgt = id; updTgt(); }
+
+function updHint(){
+  const k=UI.ac, cnt=parseInt(document.getElementById('sn').value)||1;
+  const md=MISS.find(m=>m.id===UI.miss);
+  const el = document.getElementById('hint');
+  
+  if(!k || !md) { el.textContent=''; return; }
+  
+  if(md.id === 'recruit') {
+    const cost = UNITS[k].cost * cnt;
+    el.innerHTML = `消費資金: <span style="color:var(--rd)">-${cost}</span>`;
+  } else if(md.id === 'defend') {
+    el.innerHTML = `次ターンの被ダメージを軽減します。`;
+  } else {
+    const en = G.nodes[UI.tgt];
+    if(!en){ el.textContent=''; return;}
+    const atkBase = UNITS[k].atk * cnt;
+    const defEff = en.def * 2.5;
+    const est = Math.max(10, Math.floor(atkBase * 0.8 - defEff));
+    el.innerHTML = `推定制圧ダメージ: ${est} 〜 ${Math.floor(est*1.5)}`;
+  }
+}
+
+function clickNode(n){
+  if(n.owner !== 'pl'){
+    if(UI.miss !== 'assault' && UI.miss !== 'airstrike') selectMiss('assault');
+    setTimeout(() => selectTgt(n.id), 50);
+  } else { selectBase(n.id); }
+}
+
+function addQ(){
+  if(G.q.length >= 5 || G.running) return;
+  const bid=UI.base, mid=UI.miss, k=UI.ac, cnt=parseInt(document.getElementById('sn').value)||1, tgt=UI.tgt;
+  const b=G.nodes[bid], md=MISS.find(m=>m.id===mid);
+  
+  if(md.id==='recruit' && b.res < UNITS[k].cost * cnt) { lg('sys','資金が不足しています。'); return; }
+  if(md.id!=='recruit' && b.u[k] < cnt) { lg('sys','部隊数が不足しています。'); return; }
+  
+  const tgtName = G.nodes[tgt]?.n || '自拠点';
+  G.q.push({bid, mid, k, cnt, tgt, desc:`[${b.n}] → [${tgtName}]: ${md.n} (${UNITS[k].n}×${cnt})`});
+  
+  renderQ();
+  if(G.q.length >= 5) document.getElementById('badd').disabled=true;
+}
+
+// ════════════════════════════════════════════════
+//  COMBAT LOGIC
+// ════════════════════════════════════════════════
+function getDist(n1, n2){
+  const x1=parseFloat(n1.px), y1=parseFloat(n1.py), x2=parseFloat(n2.px), y2=parseFloat(n2.py);
+  return Math.hypot(x1-x2, y1-y2);
+}
+
+function calcDmg(uKey, cnt, enNode, isAir){
+  const u = UNITS[uKey];
+  let raw = u.atk * cnt * (0.8 + Math.random()*0.4);
+  let def = enNode.def * 3 + (enNode.defBuff||0);
+  if(isAir) def *= 0.5; // 空爆は防御の影響を半分にする
+  
+  return Math.max(Math.floor(cnt * 5), Math.floor(raw - def));
+}
+
+async function execCmd(q, isPlayer){
+  const b = G.nodes[q.bid], tgt = G.nodes[q.tgt];
+  if(!b || (b.owner!=='pl' && isPlayer)) return;
+  if(b.owner === 'pl' && !isPlayer) return; // プレイヤー拠点はAIターンでは動かない
+  
+  if(q.mid === 'recruit'){
+    const cost = UNITS[q.k].cost * q.cnt;
+    if(b.res >= cost) {
+      b.res -= cost; b.u[q.k] += q.cnt;
+      if(isPlayer) lg('cmd', `[${b.n}] 資金${cost}を消費し、${UNITS[q.k].n}×${q.cnt}を配備しました。`);
+    }
+    return;
+  }
+  
+  if(q.mid === 'defend'){
+    b.defBuff += q.cnt * UNITS[q.k].def * 5;
+    if(isPlayer) lg('cmd', `[${b.n}] ${UNITS[q.k].n}が防衛陣地を構築。防御力が上昇。`);
+    return;
+  }
+  
+  // 攻撃系
+  if(!tgt || tgt.owner === b.owner) return;
+  
+  const isAir = q.mid === 'airstrike';
+  const dmg = calcDmg(q.k, q.cnt, tgt, isAir);
+  
+  drawLine(b.id, tgt.id, isPlayer ? 'var(--pl-col)' : 'var(--en-col)');
+  flashN(tgt.id);
+  await delay(400);
+  
+  tgt.hp -= dmg;
+  if(isPlayer){
+    lg('cmd', `[${b.n}]から${tgt.n}へ${MISS.find(m=>m.id===q.mid).n}！ <span style="color:var(--gr)">${dmg}の耐久を削った。</span> (残耐久:${Math.max(0,tgt.hp)})`);
+  } else if(tgt.owner === 'pl'){
+    lg('ea', `[${b.n}]から自領[${tgt.n}]へ攻撃！ <span style="color:var(--rd)">${dmg}の被害！</span> (残耐久:${Math.max(0,tgt.hp)})`);
+  }
+  
+  // 制圧判定
+  if(tgt.hp <= 0){
+    tgt.hp = Math.floor(tgt.mhp * 0.4); // 併合時はHPが一部回復して自拠点になる
+    const oldOwner = tgt.owner;
+    tgt.owner = b.owner;
+    tgt.defBuff = 0;
+    
+    if(b.owner === 'pl'){
+      lg('win', `>>> 【制圧完了】 [${tgt.n}] を我が陣営に編入しました！`);
+      G.stat.kills++; document.getElementById('sb2').textContent = G.stat.kills;
+    } else if(oldOwner === 'pl') {
+      lg('lose', `>>> 【防衛失敗】 [${tgt.n}] が [${b.n}]勢力 に制圧されました...`);
+    } else {
+      lg('sys', `[${b.n}]勢力 が [${tgt.n}] を制圧・併合しました。`);
+    }
+  }
+}
+
+async function enemyPhase(){
+  const factions = {};
+  Object.values(G.nodes).forEach(n => {
+    if(n.owner !== 'pl') {
+      if(!factions[n.owner]) factions[n.owner] = [];
+      factions[n.owner].push(n);
+    }
+  });
+
+  for(const [fId, nodes] of Object.entries(factions)){
+    for(const b of nodes){
+      // 毎ターン少し回復
+      b.res += b.inc;
+      if(b.hp < b.mhp) b.hp = Math.min(b.mhp, b.hp + Math.floor(b.mhp*0.1));
+      b.defBuff = 0;
+      
+      // AI行動決定
+      await delay(100);
+      
+      // 1. 部隊が少なければ徴募
+      const totalU = Object.values(b.u).reduce((a,c)=>a+c,0);
+      if(totalU < 15 && b.res >= 50) {
+        const type = Math.random()>0.7 ? 'tank' : 'inf';
+        const cnt = Math.floor(b.res / UNITS[type].cost);
+        if(cnt>0){
+          b.res -= cnt * UNITS[type].cost; b.u[type] += cnt;
+          continue;
+        }
+      }
+      
+      // 2. 攻撃
+      // 隣接する（距離が近い）他勢力を探す
+      const targets = Object.values(G.nodes)
+        .filter(n => n.owner !== b.owner)
+        .map(n => ({node: n, dist: getDist(b, n)}))
+        .sort((a,b)=>a.dist - b.dist);
+        
+      if(targets.length > 0 && totalU > 5){
+        const tgt = targets[0].node;
+        // 攻撃に使用する部隊
+        let atkType = 'inf', cnt=0;
+        if(b.u.tank > 0){ atkType='tank'; cnt=Math.ceil(b.u.tank*0.8); }
+        else if(b.u.heli > 0){ atkType='heli'; cnt=b.u.heli; }
+        else { cnt=Math.ceil(b.u.inf*0.6); }
+        
+        const mid = (atkType==='heli'||atkType==='jet') ? 'airstrike' : 'assault';
+        await execCmd({bid:b.id, mid:mid, k:atkType, cnt:cnt, tgt:tgt.id}, false);
+        renderMap();
+      }
+    }
+  }
+}
+
+async function exeTurn(){
+  if(G.phase!=='cmd'||G.running) return;
+  G.running=true;
+  document.getElementById('bexec').disabled=true; document.getElementById('badd').disabled=true;
+  document.getElementById('runlb').classList.add('on');
+  document.getElementById('ptag').textContent='解決フェーズ';
+  document.getElementById('ptag').className='ptag r';
+  
+  lg('trn',`━━━ 第${G.turn}ターン 開始 ━━━`);
+
+  // 自軍フェーズ
+  for(const q of G.q){
+    await execCmd(q, true);
+    renderCards(); renderMap();
+    if(checkEnd()) return;
+  }
+  G.q=[]; renderQ();
+  
+  lg('sys','──── 他勢力フェーズ ────');
+  document.getElementById('ptag').textContent='他勢力行動中';
+  document.getElementById('ptag').className='ptag e';
+  
+  await enemyPhase();
+  if(checkEnd()) return;
+  
+  endTurn();
+}
+
+function endTurn(){
+  Object.values(G.nodes).forEach(b => {
+    if(b.owner === 'pl'){
+      b.res += b.inc;
+      if(b.hp < b.mhp) b.hp = Math.min(b.mhp, b.hp + Math.floor(b.mhp*0.05));
+      b.defBuff = 0;
+    }
+  });
+  
+  G.turn++; G.phase='cmd'; G.running=false;
+  document.getElementById('badd').disabled=false; document.getElementById('bexec').disabled=false;
+  document.getElementById('runlb').classList.remove('on');
+  document.getElementById('ptag').textContent='命令フェーズ';
+  document.getElementById('ptag').className='ptag';
+  document.getElementById('tnexec').textContent=G.turn;
+  document.getElementById('tnum').textContent=G.turn;
+  
+  rebuildSel(); renderAll(); scrlL();
+}
+
+function checkEnd(){
+  const plNodes = Object.values(G.nodes).filter(n => n.owner === 'pl');
+  const enNodes = Object.values(G.nodes).filter(n => n.owner !== 'pl');
+  
+  if(enNodes.length === 0){
+    document.getElementById('ovh').textContent='埼玉県統一達成！';
+    document.getElementById('ovh').style.color='var(--gr)';
+    document.getElementById('ovp').textContent=`第 ${G.turn} ターンにて全市区町村を統合。\nあなたの指導のもと、新たな埼玉県が誕生しました。`;
+    G.running=false; document.getElementById('ov').classList.remove('hide');
+    document.getElementById('start-ui').style.display='none';
+    document.getElementById('end-ui').style.display='flex';
+    return true;
+  }
+  
+  if(plNodes.length === 0){
+    document.getElementById('ovh').textContent='勢力喪失...';
+    document.getElementById('ovh').style.color='var(--rd)';
+    document.getElementById('ovp').textContent=`第 ${G.turn} ターンにて全拠点を失いました。\nあなたの自治体は他勢力に飲み込まれました...`;
+    G.running=false; document.getElementById('ov').classList.remove('hide');
+    document.getElementById('start-ui').style.display='none';
+    document.getElementById('end-ui').style.display='flex';
+    return true;
+  }
+  return false;
+}
+
+// ════════════════════════════════════════════════
+//  RENDERING
+// ════════════════════════════════════════════════
+function pct(v,m){return Math.max(0,Math.min(100,v/m*100)).toFixed(1);}
+function bar(v,m,cls){return `<div class="brow"><div class="blb"><span>${cls==='b-hp'?'耐久':'資金'}</span><span>${v}/${m}</span></div><div class="btrk"><div class="bfill ${cls}" style="width:${pct(v,m)}%"></div></div></div>`;}
+
+function mkCard(n){
+  const isPl = n.owner === 'pl';
+  const acH = Object.entries(n.u).filter(([,v])=>v>0).map(([k,v])=>`<span class="ac ${isPl?'':'en'}">${UNITS[k].n}×${v}</span>`).join('');
+  return `<div class="uc ${isPl?'al':'en'}">
+    <div class="uc-top">
+      <div class="uc-nm ${isPl?'al':'en'}">${n.n}</div>
+      <span class="uc-sub">${isPl?'自領':'独立勢力'}</span>
+    </div>
+    ${bar(n.hp,n.mhp,'b-hp')}
+    ${bar(n.res,1000,'b-fl')}
+    <div class="acs">${acH||'<span style="font-size:10px;color:var(--dim)">部隊なし</span>'}</div>
+  </div>`;
+}
+
+function renderCards(){
+  const plN = Object.values(G.nodes).filter(n => n.owner === 'pl');
+  const enN = Object.values(G.nodes).filter(n => n.owner !== 'pl').sort((a,b)=>b.hp-a.hp);
+  
+  document.getElementById('acp').innerHTML = plN.map(mkCard).join('');
+  document.getElementById('enp').innerHTML = enN.map(mkCard).join('');
+  
+  document.getElementById('aly-sm').textContent=`${plN.length}市区町村`;
+  document.getElementById('en-sm').textContent=`残り${enN.length}勢力`;
+}
+
+function renderMap(){
+  const nd=document.getElementById('nds'); nd.innerHTML='';
+  Object.values(G.nodes).forEach(n=>{
+    const isPl = n.owner === 'pl';
+    const el = document.createElement('div');
+    el.className = `mn ${isPl?'al':'en'}`; el.id = 'mn_'+n.id;
+    el.style.left = n.px; el.style.top = n.py;
+    
+    const hp = pct(n.hp,n.mhp);
+    const hc = isPl ? 'var(--pl-col)' : 'var(--tx)';
+    const acs = Object.entries(n.u).filter(([,v])=>v>0).map(([k,v])=>`${UNITS[k].n}: ${v}`).join('\n');
+    
+    el.innerHTML=`
+      <div class="mn-c">⬢</div>
+      <div class="mn-lb" style="color:${hc}">${n.n}</div>
+      <div class="mn-hp" style="color:var(--wt)">${hp}%</div>
+      <div class="mn-tip">${n.n} (${isPl?'自領':'独立勢力'})\n耐久: ${n.hp}/${n.mhp}\n資金: ${n.res}\n${acs||'部隊なし'}</div>
+    `;
+    el.onclick=()=>clickNode(n); nd.appendChild(el);
+  });
+}
+
+function renderAll(){ renderCards(); renderMap(); }
+
+function delQ(i){
+  G.q.splice(i,1);
+  if(!G.running) document.getElementById('badd').disabled=false;
+  renderQ();
+}
+
+function renderQ(){
+  document.getElementById('qbox').innerHTML=G.q.length ? G.q.map((q,i)=>`<div class="qi"><span class="qi-txt">${q.desc}</span><span class="qi-del" onclick="delQ(${i})">✕</span></div>`).join('') : '<div class="qe">命令なし<br><span style="font-size:10px">拠点と部隊を選び命令を追加</span></div>';
+}
+
+function drawLine(fid,tid,col){
+  const svg=document.getElementById('asvg'), fm=document.getElementById('mn_'+fid), tm=document.getElementById('mn_'+tid), mp=document.getElementById('map');
+  if(!fm||!tm)return;
+  const mr=mp.getBoundingClientRect(), fr=fm.getBoundingClientRect(), tr=tm.getBoundingClientRect();
+  const x1=fr.left+fr.width/2-mr.left, y1=fr.top+fr.height/2-mr.top, x2=tr.left+tr.width/2-mr.left, y2=tr.top+tr.height/2-mr.top;
+  const ln=document.createElementNS('http://www.w3.org/2000/svg','line');
+  ln.setAttribute('x1',x1);ln.setAttribute('y1',y1);ln.setAttribute('x2',x2);ln.setAttribute('y2',y2);
+  ln.setAttribute('stroke',col);ln.setAttribute('stroke-width','2');ln.setAttribute('opacity','.8');ln.classList.add('aln');
+  svg.appendChild(ln); setTimeout(()=>{try{svg.removeChild(ln);}catch(e){}},1300);
+}
+function flashN(id){const el=document.getElementById('mn_'+id);if(!el)return; el.classList.add('fl');setTimeout(()=>el.classList.remove('fl'),850);}
+function lg(t,html){const el=document.getElementById('log'), d=document.createElement('div'); d.className='le '+t; d.innerHTML=html; el.appendChild(d); if(el.children.length>200) el.removeChild(el.children[0]); scrlL();}
+function scrlL(){const e=document.getElementById('log');e.scrollTop=e.scrollHeight;}
+
+</script>
+</body>
+</html>
